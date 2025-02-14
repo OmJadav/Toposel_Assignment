@@ -4,12 +4,14 @@ import cors from "cors";
 import connectDb from "./db/db.js";
 import authRouter from "./routes/authRoutes.js";
 import errorHandler from "./middleware/error.js";
+import cookieParser from "cookie-parser";
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT;
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(cors());
 
 connectDb();
