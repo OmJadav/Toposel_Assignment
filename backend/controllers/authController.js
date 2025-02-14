@@ -21,7 +21,7 @@ const userRegister = async (req, res, next) => {
       req.body;
     const alreadyUser = await User.findOne({ $or: [{ email }, { username }] });
     if (alreadyUser)
-      return res.status(400).json({ message: "User already exists" });
+      return res.status(400).json({ error: "User already exists" });
     const user = await User.create({
       username,
       email,
@@ -41,8 +41,9 @@ const userLogin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ error: "User not exists" });
     if (!user || !(await bcrypt.compare(password, user.password)))
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({ error: "Invalid credentials" });
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "3d",
     });
